@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tickets-depl
+spec:
+  selector:
+    matchLabels:
+      app: tickets
+  template:
+    metadata:
+      labels:
+        app: tickets
+    spec:
+      containers:
+        - name: tickets
+          image: ashtar23/tickets-service
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: ticketing-config-env
+                  key: JWT_KEY
+            - name: TICKETS_MONGO_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: ticketing-config-env
+                  key: TICKETS_MONGO_URI
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tickets-srv
+spec:
+  selector:
+    app: tickets
+  ports:
+    - name: tickets
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
