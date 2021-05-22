@@ -25,6 +25,20 @@ spec:
                 configMapKeyRef:
                   name: ticketing-config-env
                   key: TICKETS_MONGO_URI
+            - name: NATS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ticketing-config-env
+                  key: NATS_URL
+            - name: NATS_CLUSTER_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: ticketing-config-env
+                  key: NATS_CLUSTER_ID
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
 ---
 apiVersion: v1
 kind: Service

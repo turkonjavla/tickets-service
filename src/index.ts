@@ -3,7 +3,13 @@ import { app } from './app';
 import { natsWrapper } from './nats-wrapper';
 
 const start = async () => {
-  const { TICKETS_MONGO_URI, JWT_KEY } = process.env;
+  const {
+    TICKETS_MONGO_URI,
+    JWT_KEY,
+    NATS_URL,
+    NATS_CLUSTER_ID,
+    NATS_CLIENT_ID,
+  } = process.env;
 
   if (!JWT_KEY) {
     throw new Error('JWT_KEY must be defined');
@@ -13,8 +19,20 @@ const start = async () => {
     throw new Error('TICKETS_MONGO_URI must be defined');
   }
 
+  if (!NATS_URL) {
+    throw new Error('NATS_URL must be defined');
+  }
+
+  if (!NATS_CLUSTER_ID) {
+    throw new Error('NATS_CLUSTER_ID must be defined');
+  }
+
+  if (!NATS_CLIENT_ID) {
+    throw new Error('NATS_CLIENT_ID must be defined');
+  }
+
   try {
-    await natsWrapper.connect('ticketing', 'sfegrht', 'http://nats-srv:4222');
+    await natsWrapper.connect(NATS_CLUSTER_ID, NATS_CLIENT_ID, NATS_URL);
 
     natsWrapper.client.on('close', () => {
       console.log('Nats connection closed');
